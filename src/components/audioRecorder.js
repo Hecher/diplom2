@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import Chartist from "chartist";
+import '../styles/chartist.css'
+
 
 const AudioRecorder = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -6,6 +9,8 @@ const AudioRecorder = () => {
   const [audioStream, setAudioStream] = useState(null);
   const audioChunks = useRef([]);
   const isManualStop = useRef(false);
+
+  
 
   useEffect(() => {
     return () => {

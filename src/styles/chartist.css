@@ -1,0 +1,46 @@
+/* Линия графика */
+.ct-series-a .ct-line {
+    stroke: red;
+    stroke-width: 5px;
+    fill: none;
+  }
+  
+  /* Точки на графике */
+  .ct-series-a .ct-point {
+    stroke: red;
+    stroke-width: 10px;
+    stroke-linecap: square;
+  }
+  
+  /* Заливка под линией */
+  .ct-series-a .ct-area {
+    fill: gray !important;
+    fill-opacity: 0.5 !important;
+  }
+  
+  /* Убираем возможную черную заливку по умолчанию */
+  .ct-area {
+    fill: none !important;
+  }
+  
+  /* Горизонтальная ось (ось X) */
+  .ct-axis.ct-horizontal .ct-label,
+  .ct-axis.ct-vertical .ct-label {
+    color: black;
+    fill: black;
+    font-size: 14px;
+  }
+  
+  /* Линии осей */
+  .ct-axis.ct-horizontal line,
+  .ct-axis.ct-vertical line {
+    stroke: black;
+    stroke-width: 1px;
+  }
+  
+  /* Линии сетки (если хочешь их оставить) */
+  .ct-grid {
+    stroke: #ccc;
+    stroke-dasharray: 2px;
+  }
+  
