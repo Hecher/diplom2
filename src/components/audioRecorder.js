@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Chartist from "chartist";
+import { LineChart } from 'chartist';
 import '../styles/chartist.css'
 
 
@@ -9,9 +9,53 @@ const AudioRecorder = () => {
   const [audioStream, setAudioStream] = useState(null);
   const audioChunks = useRef([]);
   const isManualStop = useRef(false);
+  const checkValue = 0.016
 
+  const chartRef1 = useRef(null);
+  const chartInstance1 = useRef(null);
+  const chartRef2 = useRef(null);
+  const chartInstance2 = useRef(null);
+  const [serverResponse, setServerResponse] = useState(null);
+  const [labels, setLabels] = useState([0, 5, 10, 15, 20]);
+  const [data, setData] = useState([0, 0, 0, 0, 0]);
+  const [iter, setIter] = useState(0);
+  const [data2, setData2] = useState([0, 0, 0, 0, 0]);
+
+  useEffect(() => {
+    console.log('Data обновилось:', data);
+  }, [data]);
+  useEffect(() => {
+    console.log("HI " + data2);
+  }, [data2])
+
+  const updateDataAtIndex = (category, index, newValue) => {
+    if(category === 1){
+      setData(prevData => {
+        const update = [...prevData];
+        update[index] = newValue;
+        return update;
+      })
+    }
+    else{
+      setData2(prevData => {
+        const update = [...prevData];
+        update[index] = newValue;
+        return update;
+      })
+    }
+    
+  };
+  const  pushNewData =  (newValue, category) => {
+    if (category === 1){
+      setData(prevData => [...prevData.slice(1), newValue]);
+    }
+    else{
+      setData2(prevData => [...prevData.slice(1), newValue]);
+    }
+    
+  };
   
-
+  
   useEffect(() => {
     return () => {
       if (audioStream) {
@@ -110,6 +154,36 @@ const AudioRecorder = () => {
           
           const responseData = await response.json(); // Или response.text() если сервер возвращает не JSON
           console.log('Ответ сервера:', responseData);
+          setIter(prev => {
+            
+            const newIter = prev + 1;
+            if (newIter < 6){
+              updateDataAtIndex(1, newIter-1 % 5, responseData.mse);
+              if (responseData.mse >= checkValue) {
+                updateDataAtIndex(2, newIter-1 % 5, 1);
+                // console.log("HI " + data2);
+              }
+            }
+            else {
+              console.log("Я пидор " + responseData.mse);
+              console.log("Я не пидор " + data);
+              setLabels(prevData => prevData.map(value => value +5))
+              if (responseData.mse != data[data.length - 1]) {
+                pushNewData(responseData.mse, 1);
+                if(responseData.mse >= checkValue) {
+                  pushNewData(1, 2);
+                }
+
+              }
+              else {
+                return 0;
+              }
+            }
+            
+            return newIter;
+          });
+
+
         } catch (error) {
           console.error('Ошибка запроса:', error);
           
@@ -132,6 +206,50 @@ const AudioRecorder = () => {
       alert('Для работы приложения требуется доступ к микрофону');
     }
   };
+
+  useEffect(() => {
+      if (chartRef1.current) {
+        chartInstance1.current = new LineChart(chartRef1.current, {
+          labels: labels,
+          series: [data]
+        }, {
+          fullWidth: true,
+          showArea: true,
+          chartPadding: { right: 40 }
+        });
+      }
+    }, []);
+  useEffect(() => {
+  
+    if (chartInstance1.current) {
+      chartInstance1.current.update({
+        labels: labels,
+        series: [data]
+      });
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if(chartRef2.current) {
+      chartInstance2.current = new LineChart(chartRef2.current, {
+        labels: labels,
+        series: [data2]
+      }, {
+        fullWidth: true,
+        showArea: true,
+        chartPadding: {right:40}
+      });
+    }
+  }, []);
+  useEffect(() => {
+    if(chartInstance2.current) {
+      chartInstance2.current.update({
+        labels: labels,
+        series: [data2]
+      });
+    }
+  }, [data2])
+
 
   const stopRecording = () => {
     if (mediaRecorder) {
@@ -157,6 +275,8 @@ const AudioRecorder = () => {
       minHeight: '100vh',
       backgroundColor: '#f0f2f5'
     }}>
+      <div ref={chartRef1} style={{ width: '50%', height: '200px' }} />
+      <div ref={chartRef2} style={{ width: '50%', height: '200px' }} />
       <button
         onClick={isRecording ? stopRecording : startRecording}
         style={{
