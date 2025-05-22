@@ -267,16 +267,45 @@ const AudioRecorder = () => {
     }
   };
 
-  return (
+  
+return (
+  <div style={{
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: '100vh',
+    backgroundColor: '#f0f2f5',
+    position: 'relative',  
+    width: '100%'          
+  }}>
+    {/* Контейнер для графиков */}
     <div style={{
       display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      minHeight: '100vh',
-      backgroundColor: '#f0f2f5'
+      justifyContent: 'space-between',
+      width: 'calc(100% - 100px)', 
+      maxWidth: '1200px',          
+      position: 'relative'
     }}>
-      <div ref={chartRef1} style={{ width: '50%', height: '200px' }} />
-      <div ref={chartRef2} style={{ width: '50%', height: '200px' }} />
+      {/* Первый график - слева */}
+      <div ref={chartRef1} style={{ 
+        width: '48%', 
+        height: '200px',
+        marginLeft: '50px'  // Отступ 50px слева
+      }} />
+      
+      {/* Второй график - справа */}
+      <div ref={chartRef2} style={{ 
+        width: '48%', 
+        height: '200px',
+        marginRight: '50px' // Отступ 50px справа
+      }} />
+    </div>
+    
+    {/* Кнопка записи - размещаем под графиками */}
+    <div style={{
+      position: 'absolute',
+      bottom: '50px'
+    }}>
       <button
         onClick={isRecording ? stopRecording : startRecording}
         style={{
@@ -288,17 +317,15 @@ const AudioRecorder = () => {
           color: 'white',
           cursor: 'pointer',
           transition: 'all 0.3s ease',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-          ':hover': {
-            transform: 'scale(1.05)',
-            boxShadow: '0 6px 8px rgba(0, 0, 0, 0.2)'
-          }
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
         }}
       >
-        {isRecording ? '⏹ Stop' : '⏺ Start'}
+        {isRecording ? 'Остановить запись' : 'Начать запись'}
       </button>
     </div>
-  );
+  </div>
+);
+
 };
 
 export default AudioRecorder;
