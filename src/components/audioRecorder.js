@@ -276,7 +276,9 @@ return (
     minHeight: '100vh',
     backgroundColor: '#f0f2f5',
     position: 'relative',  
-    width: '100%'          
+    width: '100%',
+    background: 'linear-gradient(135deg,rgb(91, 137, 222) 0%,rgb(7, 154, 207) 100%)', // Синий градиент
+    color: 'white'          
   }}>
     {/* Контейнер для графиков */}
     <div style={{

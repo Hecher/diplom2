@@ -111,7 +111,9 @@ const styles = {
         justifyContent: 'center',
         minHeight: '100vh',
         margin: 0,
-        fontSize: '16px'
+        fontSize: '16px',
+        background: 'linear-gradient(135deg,rgb(91, 137, 222) 0%,rgb(7, 154, 207) 100%)', // Синий градиент
+        color: 'white'
     },
     label: {
         marginBottom: '10px',
@@ -139,7 +141,10 @@ const styles = {
         color: 'red',
         marginBottom: '15px',
         width: '300px',
-        textAlign: 'center'
+        textAlign: 'center',
+        //border: 'px solid black',
+        height: '30px',
+        background: 'white'
     }
 }
 
