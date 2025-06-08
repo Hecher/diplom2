@@ -21,6 +21,9 @@ const AudioRecorder = () => {
   const [iter, setIter] = useState(0);
   const [data2, setData2] = useState([0, 0, 0, 0, 0]);
 
+  //Число срабатываний тревоги
+  const [totalTriggers, setTotalTriggers] = useState(0);
+
   useEffect(() => {
     console.log('Data обновилось:', data);
   }, [data]);
@@ -154,6 +157,9 @@ const AudioRecorder = () => {
           
           const responseData = await response.json(); // Или response.text() если сервер возвращает не JSON
           console.log('Ответ сервера:', responseData);
+          if (responseData.mse > checkValue) {
+            setTotalTriggers(prev => prev + 1);
+          }
           setIter(prev => {
             
             const newIter = prev + 1;
@@ -205,6 +211,7 @@ const AudioRecorder = () => {
       console.error('Microphone access error:', error);
       alert('Для работы приложения требуется доступ к микрофону');
     }
+    
   };
 
   useEffect(() => {
@@ -215,7 +222,10 @@ const AudioRecorder = () => {
         }, {
           fullWidth: true,
           showArea: true,
-          chartPadding: { right: 40 }
+          chartPadding: { right: 40 },
+          axisX: {
+            labelInterpolationFnc: value => `${value} сек`
+          }
         });
       }
     }, []);
@@ -237,7 +247,10 @@ const AudioRecorder = () => {
       }, {
         fullWidth: true,
         showArea: true,
-        chartPadding: {right:40}
+        chartPadding: {right:40},
+        axisX: {
+          labelInterpolationFnc: value => `${value} сек`
+        }
       });
     }
   }, []);
@@ -280,6 +293,19 @@ return (
     background: 'linear-gradient(135deg,rgb(91, 137, 222) 0%,rgb(7, 154, 207) 100%)', // Синий градиент
     color: 'white'          
   }}>
+    {/*Контейнер для срабатываний*/}
+    <div style={{
+      position: 'absolute',
+      top: '20px',
+      right: '20px',
+      backgroundColor: 'rgba(0, 0, 0, 0.46)',
+      padding: '10px 15px',
+      borderRadius: '10px',
+      fontSize: '16px'
+    }}>
+      Срабатываний: {totalTriggers}
+    </div>
+
     {/* Контейнер для графиков */}
     <div style={{
       display: 'flex',
