@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { LineChart } from 'chartist';
 import '../styles/chartist.css'
+import { generatePDFReport } from './pdfGenerator';
 
 
 const AudioRecorder = () => {
@@ -23,6 +24,7 @@ const AudioRecorder = () => {
 
   //Число срабатываний тревоги
   const [totalTriggers, setTotalTriggers] = useState(0);
+  const [triggerEvents, setTriggerEvents] = useState([]);
 
   useEffect(() => {
     console.log('Data обновилось:', data);
@@ -159,6 +161,7 @@ const AudioRecorder = () => {
           console.log('Ответ сервера:', responseData);
           if (responseData.mse > checkValue) {
             setTotalTriggers(prev => prev + 1);
+            setTriggerEvents(prev => [...prev, { timestamp: Date.now(), mseValue: responseData.mse }]);
           }
           setIter(prev => {
             
@@ -329,10 +332,12 @@ return (
       }} />
     </div>
     
-    {/* Кнопка записи - размещаем под графиками */}
+    {/* Кнопки под графиками */}
     <div style={{
       position: 'absolute',
-      bottom: '50px'
+      bottom: '50px',
+      display: 'flex',
+      gap: '20px'
     }}>
       <button
         onClick={isRecording ? stopRecording : startRecording}
@@ -340,19 +345,43 @@ return (
           padding: '15px 30px',
           fontSize: '18px',
           borderRadius: '25px',
-          border: 'none',
-          backgroundColor: isRecording ? '#ff4444' : '#4CAF50',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          backgroundColor: isRecording ? 'rgba(255, 68, 68, 0.2)' : 'rgba(76, 175, 80, 0.2)',
           color: 'white',
           cursor: 'pointer',
           transition: 'all 0.3s ease',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)'
         }}
       >
         {isRecording ? 'Остановить запись' : 'Начать запись'}
       </button>
+
+      {/* Кнопка для генерации PDF */}
+      <button
+        onClick={() => generatePDFReport(triggerEvents, totalTriggers)}
+        style={{
+          padding: '15px 30px',
+          fontSize: '18px',
+          borderRadius: '25px',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          backgroundColor: 'rgba(33, 150, 243, 0.2)',
+          color: 'white',
+          cursor: 'pointer',
+          transition: 'all 0.3s ease',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)'
+        }}
+      >
+        Сгенерировать PDF отчет
+      </button>
     </div>
+
   </div>
 );
+
 
 };
 
